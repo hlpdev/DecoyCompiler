@@ -2,24 +2,39 @@
 
 std::vector<Token> Lexer::tokenize() {
     std::vector<Token> tokens;
+    bool lineHasTokens = false;
+    
     while (pos < source.length()) {
         char current = peek();
 
-        if (std::isdigit(current) || current == '-') {
-            tokens.push_back(readNumber());
-        } else if (std::isalpha(current) || current == '_') {
-            tokens.push_back(readIdentifier());
-        } else if (current == '"') {
-            tokens.push_back(readString());
-        } else if (current == ',') {
+        if (current == '\n') {
             consume();
-            tokens.push_back({ TokenType::COMMA, ",", line });
-        } else if (current == '\n') {
-            consume();
-            tokens.push_back({ TokenType::END_OF_LINE, "EOL", line });
+            if (lineHasTokens) {
+                tokens.push_back({ TokenType::END_OF_LINE, "EOL", line });
+                lineHasTokens = false;
+            }
             line++;
-        } else {
+        } else if (std::isspace(current)) {
             consume();
+        } else {
+            if (std::isdigit(current) || current == '-') {
+                tokens.push_back(readNumber());
+            } else if (std::isalpha(current) || current == '_') {
+                tokens.push_back(readIdentifier());
+            } else if (current == '"') {
+                tokens.push_back(readString());
+            } else if (current == ',') {
+                consume();
+                tokens.push_back({ TokenType::COMMA, ",", line });
+            } else if (current == '\n') {
+                consume();
+                tokens.push_back({ TokenType::END_OF_LINE, "EOL", line });
+                line++;
+            } else {
+                consume();
+            }
+
+            lineHasTokens = true;
         }
     }
 

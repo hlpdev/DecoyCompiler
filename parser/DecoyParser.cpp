@@ -22,6 +22,12 @@ const Token& Parser::advance() {
 }
 
 void Parser::consume(TokenType expected, const std::string& error) {
+    if (expected != TokenType::END_OF_LINE) {
+        while (!isAtEnd() && peek().type == TokenType::END_OF_LINE) {
+            advance();
+        }
+    }
+
     if (isAtEnd() || peek().type != expected) {
         throw parseError(error);
     }
