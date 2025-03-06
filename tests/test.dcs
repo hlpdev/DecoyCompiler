@@ -1,0 +1,13 @@
+println("Hello, Decoy!");
+
+int8 mySigned = -127;
+uint8 myUnsigned = 255;
+
+myUnsigned = 5;
+mySigned = -5;
+
+if (mySigned > 5) {
+    println("test");
+} else {
+    println("not test");
+}
