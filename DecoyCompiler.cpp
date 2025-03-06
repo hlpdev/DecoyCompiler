@@ -9,6 +9,8 @@
 #include "codegen/DecoySemanticAnalyzer.hpp"
 #include "codegen/DecoyCodeGenerator.hpp"
 
+#include "DecoyDefs.hpp"
+
 #include <iomanip>
 
 // Helper to convert TokenType to a string
@@ -74,6 +76,8 @@ struct CompilationUnit {
 };
 
 int main(int argc, char* argv[]) {
+    std::cout << TITLE << ' ' << COMPILE_TAG << " (C) " << CURRENT_YEAR << "\n\n";
+    
     std::vector<std::string> inputFiles;
     std::string outputFile;
 
@@ -168,6 +172,12 @@ int main(int argc, char* argv[]) {
             mz_zip_writer_end(&zipArchive);
             return 1;
         }
+    }
+
+    if (!mz_zip_writer_add_mem(&zipArchive, "inf", COMPILE_TAG, COMPILE_TAG_LEN, MZ_DEFAULT_COMPRESSION)) {
+        std::cerr << "Failed to add compile information to output binary\n";
+        mz_zip_writer_end(&zipArchive);
+        return 1;
     }
 
     if (!mz_zip_writer_finalize_archive(&zipArchive) || !mz_zip_writer_end(&zipArchive)) {

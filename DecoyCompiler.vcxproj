@@ -176,6 +176,7 @@
     <ClInclude Include="codegen\DecoyCodeGenerator.hpp" />
     <ClInclude Include="codegen\DecoySemanticAnalyzer.hpp" />
     <ClInclude Include="codegen\DecoySymbolTable.hpp" />
+    <ClInclude Include="DecoyDefs.hpp" />
     <ClInclude Include="lexer\DecoyLexer.hpp" />
     <ClInclude Include="parser\DecoyParser.hpp" />
   </ItemGroup>
