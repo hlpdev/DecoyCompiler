@@ -9,7 +9,6 @@
 #include "codegen/DecoySemanticAnalyzer.hpp"
 #include "codegen/DecoyCodeGenerator.hpp"
 
-#include <iostream>
 #include <iomanip>
 
 // Helper to convert TokenType to a string
