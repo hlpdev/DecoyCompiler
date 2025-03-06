@@ -26,8 +26,8 @@ std::string getTokenTypeName(TokenType type) {
     }
 }
 
-void printTokens(const std::vector<Token>& tokens) {
-    std::cout << "\nToken Stream:\n";
+void printTokens(const std::vector<Token>& tokens, std::string filename) {
+    std::cout << "\nToken Stream (" + filename + "):\n";
     std::cout << "==============\n";
     for (const auto& token : tokens) {
         std::cout << "Line " << token.line << ": " 
@@ -38,8 +38,8 @@ void printTokens(const std::vector<Token>& tokens) {
 }
 
 
-void printAST(const std::vector<InstructionNode>& ast) {
-    std::cout << "Parsed Program:\n";
+void printAST(const std::vector<InstructionNode>& ast, std::string filename) {
+    std::cout << "Parsed Program (" + filename + "):\n";
     std::cout << "----------------\n";
     
     // First pass to find maximum line number width
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> inputFiles;
     std::string outputFile;
 
-    bool showHelp = false;
+    bool showHelp = false, debugLexer = false, debugParser = false;
 
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
@@ -90,11 +90,15 @@ int main(int argc, char* argv[]) {
             outputFile = argv[++i];
         } else if (arg == "-h") {
             showHelp = true;
+        } else if (arg == "--debug-lexer") {
+            debugLexer = true;
+        } else if (arg == "--debug-parser") {
+            debugParser = true;
         }
     }
-
+    
     if (showHelp || inputFiles.empty() || outputFile.empty()) {
-        std::cerr << "Usage: " << argv[0] << " -i script1.dc script2.dc -o output.xex\n";
+        std::cerr << "Usage: " << argv[0] << " [--debug-lexer] [--debug-parser] -i script1.dc script2.dc -o output.xex\n";
         return 1;
     }
 
@@ -113,9 +117,17 @@ int main(int argc, char* argv[]) {
             
             Lexer lexer(source);
             auto tokens = lexer.tokenize();
+
+            if (debugLexer) {
+                printTokens(tokens, input);
+            }
             
             Parser parser(tokens);
             auto ast = parser.parse();
+
+            if (debugParser) {
+                printAST(ast, input);
+            }
             
             SymbolTable symbols;
             SemanticAnalyzer analyzer(symbols, ast);
